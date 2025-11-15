@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Form (Grid Layout)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- JavaScript from your Form Table.html -->
+    <script>
+        function showSummary(formData) {
+            const summaryContent = document.getElementById('summaryContent');
+            if (!summaryContent) return;
+            
+            const courseSelect = document.getElementById('favCourse');
+            let courseText = "N/A";
+            if (courseSelect.selectedIndex > 0) {
+                courseText = courseSelect.options[courseSelect.selectedIndex].text;
+            }
+            
+            // Fixed typo: 'State of Origin' and 'Department' keys
+            const html = `
+                <p><strong>Name:</strong> ${formData.name}</p>
+                <p><strong>Matric No:</strong> ${formData.matricNo}</p>
+                <p><strong>Gender:</strong> ${formData.gender}</p>
+                <p><strong>State of Origin:</strong> ${formData.state}</p>
+                <p><strong>Department:</strong> ${formData.department}</p>
+                <p><strong>Favourite Course:</strong> ${courseText}</p>
+            `;
+            
+            summaryContent.innerHTML = html;
+        }
+
+        function validateForm() {
+            const form = document.querySelector('form');
+            const formDataObj = Object.fromEntries(new FormData(form));
+
+            // Trim string values
+            const name = (formDataObj.name || '').trim();
+            const matricNo = (formDataObj.matricNo || '').trim();
+            const department = (formDataObj.department || '').trim();
+            const gender = formDataObj.gender;
+            const state = formDataObj.stateOfOrigin;
+            const favCourse = formDataObj.favouriteCourse;
+
+            // Get all message elements
+            const errorEl = document.getElementById('errorMsg');
+            const successEl = document.getElementById('successMsg');
+            const loadingEl = document.getElementById('loadingMsg');
+            const summaryEl = document.getElementById('dataSummary');
+            const submitBtn = form.querySelector('input[type="submit"]');
+
+            const nameRegex = /^[A-Za-z ]{3,40}$/;
+            const matricNoRegex = /^RUN\/([A-Z]{3})\/([0-9]{2})\/([0-9]{5})$/;
+            const genderOptions = ['Male', 'Female'];
+
+            // Reset all messages and hide summary/loading elements
+            errorEl.style.display = 'none';
+            successEl.style.display = 'none';
+            loadingEl.style.display = 'none';
+            summaryEl.style.display = 'none';
+
+            // Validation logic
+            if (!nameRegex.test(name) || !matricNoRegex.test(matricNo) || 
+                !genderOptions.includes(gender) || !favCourse || 
+                !state || !department) {
+                let errorMessage = 'Incomplete or incorrect data.';
+                if (!nameRegex.test(name)) {
+                    errorMessage = 'Name is incomplete or invalid.';
+                } else if (!matricNoRegex.test(matricNo)) {
+                    errorMessage = 'Matric No. is incorrect. (e.g., RUN/IFT/22/12345)';
+                } else if (!gender) {
+                    errorMessage = 'Please select your gender.';
+                } else if (!state) {
+                    errorMessage = 'Please select your state of origin.';
+                } else if (!department) {
+                    errorMessage = 'Department is required.';
+                } else if (!favCourse) {
+                    errorMessage = 'Please select a favourite course.';
+                }
+                errorEl.textContent = errorMessage;
+                errorEl.style.display = 'block';
+                return false;
+            }
+
+            // success: show loading animation, then display summary of inputs
+            loadingEl.style.display = 'block';
+            if (submitBtn) submitBtn.disabled = true;
+
+            // Use the already gathered data
+            const formData = {
+                name: name,
+                matricNo: matricNo,
+                gender: gender,
+                state: state,
+                department: department,
+                favouriteCourse: favCourse
+            };
+
+            setTimeout(function () {
+                loadingEl.style.display = 'none';
+                showSummary(formData);
+                summaryEl.style.display = 'block';
+                successEl.textContent = 'Data input correctly.';
+                successEl.style.display = 'block';
+                if (submitBtn) submitBtn.disabled = false;
+            }, 1200);
+
+            return false; // prevent actual form submission
+        }
+    </script>
+
+    <!-- Styles from homepage.html and new form styles -->
+    <style>
+        /* Basic reset and full-height setup */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        /* The Grid container (from homepage.html) */
+        .grid-container {
+            display: grid;
+            grid-template-rows: auto 1fr auto; /* Header, Main (1fr), Footer */
+            min-height: 100vh; 
+            width: 100%;
+        }
+
+        /* Header and Footer styles */
+        .grid-header, .grid-footer {
+            padding: 30px 40px;
+            color: white;
+        }
+
+        .grid-header {
+            background-color: #4a90e2; /* Blue */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .grid-header h2 {
+            margin: 0;
+        }
+
+        .grid-header nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .grid-header nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .grid-header nav a:hover, .grid-header nav a.active {
+            background-color: white;
+            color: #4a90e2;
+        }
+
+        .grid-footer {
+            background-color: #333a45; /* Dark Gray */
+            text-align: center;
+        }
+
+        /* Main content area */
+        .grid-main {
+            background-color: #f8f9fa; /* Light Gray */
+            color: #333;
+            padding: 40px;
+            /* Center the form content */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .form-wrapper {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .form-wrapper h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        /* Form styling */
+        form table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        form th, form td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        form th {
+            width: 30%;
+            font-weight: 600;
+            color: #333;
+        }
+
+        form input[type="text"], form select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Important for 100% width */
+        }
+        
+        form input[type="submit"] {
+            background-color: #0b74de;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        form input[type="submit"]:hover {
+            background-color: #085da9;
+        }
+        
+        form input[type="submit"]:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+
+        /* Message and Summary Styles */
+        #loadingMsg, #dataSummary, #successMsg, #errorMsg {
+            margin-top: 20px;
+        }
+        
+        #dataSummary {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        #dataSummary h3 {
+            margin: 0 0 15px;
+            color: #2c3e50;
+        }
+
+        #summaryContent {
+            line-height: 1.6;
+        }
+
+        #successMsg { color: #187f2e; font-weight: bold; }
+        #errorMsg { color: #b00020; font-weight: bold; }
+        
+        /* Spinner Animation */
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Challenge: Media Query */
+        @media (max-width: 600px) {
+            .grid-header, .grid-main, .grid-footer {
+                padding: 20px;
+            }
+            
+            .grid-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .grid-main {
+                padding: 10px;
+            }
+            
+            .form-wrapper {
+                padding: 20px;
+            }
+
+            form th, form td {
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
+            
+            form th {
+                padding-bottom: 5px;
+            }
+            
+            form td {
+                padding-top: 0;
+                padding-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Task 2 HTML Structure (Grid) -->
+    <div class="grid-container">
+        <!-- Row 1: Header -->
+        <header class="grid-header">
+            <h2>Omoruyi David</h2>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="profile.html">My Profile</a>
+                <a href="Form Table.html" class="active">Student Form</a>
+            </nav>
+        </header>
+        
+        <!-- Row 2: Main Content -->
+        <main class="grid-main">
+            <!-- Wrapper to center and style the form area -->
+            <div class="form-wrapper">
+                <h1>Student Information Form</h1>
+            
+                <!-- Your Form from Form Table.html -->
+                <form onsubmit="return validateForm()">
+                    <table>
+                        <tr>
+                            <th>Name (Surname First)</th>
+                            <td><input type="text" name="name"></td>
+                        </tr>
+                        <tr>
+                            <th>Matric No.</th>
+                            <td><input type="text" name="matricNo" placeholder="e.g., RUN/IFT/22/12345"></td>
+                        </tr>
+                        <tr>
+                            <th>Gender</th>
+                            <td>
+                                <select name="gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>State of origin</th>
+                            <td>
+                                <!-- I fixed the 'name' attribute here -->
+                                <select name="stateOfOrigin">
+                                    <option value="">Select State</option>
+                                    <option value="Abia">Abia</option>
+                                    <option value="Adamawa">Adamawa</option>
+                                    <option value="Akwa Ibom">Akwa Ibom</option>
+                                    <option value="Anambra">Anambra</option>
+                                    <option value="Bauchi">Bauchi</option>
+                                    <option value="Bayelsa">Bayelsa</option>
+                                    <option value="Benue">Benue</option>
+                                    <option value="Borno">Borno</option>
+                                    <option value="Cross River">Cross River</option>
+                                    <option value="Delta">Delta</option>
+                                    <option value="Ebonyi">Ebonyi</option>
+                                    <option value="Edo">Edo</option>
+                                    <option value="Ekiti">Ekiti</option>
+                                    <option value="Enugu">Enugu</option>
+                                    <option value="Gombe">Gombe</option>
+                                    <option value="Imo">Imo</option>
+                                    <option value="Jigawa">Jigawa</option>
+                                    <option value="Kaduna">Kaduna</option>
+                                    <option value="Kano">Kano</option>
+                                    <option value="Kogi">Kogi</option>
+                                    <option value="Kwara">Kwara</option>
+                                    <option value="Lagos">Lagos</option>
+                                    <option value="Nasarawa">Nasarawa</option>
+                                    <option value="Niger">Niger</option>
+                                    <option value="Ogun">Ogun</option>
+                                    <option value="Ondo">Ondo</option>
+                                    <option value="Osun">Osun</option>
+                                    <option value="Oyo">Oyo</option>
+                                    <option value="Plateau">Plateau</option>
+                                    <option value="Rivers">Rivers</option>
+                                    <option value="Sokoto">Sokoto</option>
+                                    <option value="Taraba">Taraba</option>
+                                    <option value="Yobe">Yobe</option>
+                                    <option value="Zamfara">Zamfara</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Department</th>
+                            <td><input type="text" name="department"></td>
+                        </tr>
+                        <tr>
+                            <th>Favourite Course</th>
+                            <td>
+                                <select name="favouriteCourse" id="favCourse">
+                                    <option value="">Select a Course</option>
+                                    <option value="COS 201">COS 201 - Computer Programming I</option>
+                                    <option value="CYB 201">CYB 201 - Introduction to Cybersecurity and Strategy</option>
+                                    <option value="ENT 211">ENT 211 - Entrepreneurship and Innovation</option>
+                                    <option value="IFT 203">IFT 203 - Introduction to Web Technologies</option>
+                                    <option value="IFT 205">IFT 205 - Introduction to Information Technology</option>
+                                    <option value="IFT 211">IFT 211 - Digital Logic Design</option>
+                                    <option value="MTH 201">MTH 201 - Mathematical Methods</option>
+                                    <option value="GIT 213">GIT 213 - Introduction to Machine Learning I</option>
+                                    <option value="FIC 201">FIC 201 - Christian Worldview and Contemporary Culture</option>
+                                    <option value="ICT 201">ICT 201 - Introduction to Information and Communication Technology</option>
+                                    <option value="IFS 207">IFS 207 - Introduction to Information Systems</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="submit" value="Submit"></td>
+                        </tr>
+                    </table>
+                </form>
+            
+                <!-- Loading animation -->
+                <div id="loadingMsg" style="display:none;text-align:center;">
+                    <div class="spinner"></div>
+                    <div style="margin-top:10px;color:#666;">Processing...</div>
+                </div>
+                
+                <!-- Summary of input data -->
+                <div id="dataSummary" style="display:none;">
+                    <h3>Submitted Information</h3>
+                    <div id="summaryContent"></div>
+                </div>
+                
+                <!-- Status Messages -->
+                <div id="successMsg" style="display:none;"></div>
+                <div id="errorMsg" style="display:none;"></div>
+            </div>
+        </main>
+        
+        <!-- Row 3: Footer -->
+        <footer class="grid-footer">
+            <p>&copy; 2025 Omoruyi David. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

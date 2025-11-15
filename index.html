@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Student Homepage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Basic reset and full-height setup */
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        /* The Grid container */
+        .grid-container {
+            display: grid;
+            grid-template-rows: auto 1fr auto; /* Header, Main (flexible), Footer */
+            min-height: 100vh; 
+            width: 100%;
+        }
+
+        /* Header and Footer styles */
+        .grid-header, .grid-footer {
+            padding: 30px 40px;
+            color: white;
+        }
+
+        .grid-header {
+            background-color: #4a90e2; /* Blue */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .grid-header h2 {
+            margin: 0;
+        }
+        
+        .grid-header nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .grid-header nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .grid-header nav a:hover, .grid-header nav a.active {
+            background-color: white;
+            color: #4a90e2;
+            border-color: white;
+        }
+
+        .grid-footer {
+            background-color: #333a45; /* Dark Gray */
+            text-align: center;
+        }
+
+        /* Main content area */
+        .grid-main {
+            background-color: #f8f9fa; /* Light Gray */
+            color: #333;
+            padding: 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grid-main .matric-no {
+            font-size: 1.2rem;
+            color: #555;
+            background-color: #e9ecef;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        /* Challenge: Media Query */
+        @media (max-width: 600px) {
+            .grid-header, .grid-main, .grid-footer {
+                padding: 20px; /* Reduced padding */
+            }
+            .grid-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            h1 { font-size: 1.5rem; } /* Reduced font size */
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <header class="grid-header">
+            <h2>Omoruyi David</h2>
+            <nav>
+                <a href="index.html" class="active">Home</a>
+                <a href="profile.html">My Profile</a>
+                <a href="Form Table.html">Student Form</a>
+            </nav>
+        </header>
+        <main class="grid-main">
+            <h1>Welcome to Omoruyi David's IFT 203 Website</h1>
+            <p class="matric-no">RUN/IFT/24/17394</p>
+        </main>
+        <footer class="grid-footer">
+            <p>&copy; 2025 Omoruyi David. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
